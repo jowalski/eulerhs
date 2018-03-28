@@ -1,3 +1,6 @@
+import Data.List.Ordered (minus, union, unionAll)
+
+--
 -- Problem 27: Quadratic primes
 -- Euler published the remarkable quadratic formula:
 --                                n^2 + n + 41
@@ -15,3 +18,34 @@
 -- Find the product of the coefficients, a and b, for the quadratic
 -- expression that produces the maximum number of primes for consecutive
 -- values of n, starting with n = 0.
+quad :: Int -> Int -> Int -> Int
+quad a b n = n ^ 2 + (a * n) + b
+
+isqrt :: Int -> Int
+isqrt = floor . sqrt . fromIntegral
+
+isPrime k = null [(x)|x <- [2 .. isqrt k],k `mod` x == 0]
+
+quadPrimes :: Int -> Int -> [Int]
+quadPrimes a b =
+  (takeWhile (\n -> isPrime n && (n > 0))
+             (map (quad a b)
+                  [0 ..]))
+
+numQuadPrimes :: Int -> Int -> Int
+numQuadPrimes a b =
+  length (takeWhile (\n -> isPrime n && (n > 0))
+                    (map (quad a b)
+                         [0 ..]))
+
+tryQuadPrimes :: [(Int,(Int,Int))]
+tryQuadPrimes =
+  [(numQuadPrimes a b,(a,b))|a <- [-999 .. 999],b <- [-999 .. 999]]
+
+maxQuadPrimes :: Int
+maxQuadPrimes =
+  maximum [(numQuadPrimes a b)|a <- [-999 .. 999],b <- [-999 .. 999]]
+
+-- mostQuadPrimes
+mostQuadPrimes :: Maybe (Int,Int)
+mostQuadPrimes = lookup maxQuadPrimes tryQuadPrimes
