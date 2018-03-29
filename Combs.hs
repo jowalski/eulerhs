@@ -56,4 +56,24 @@ combswr :: [a] -> Int -> [[a]]
 combswr [] _ = [[]]
 combswr _ 0 = [[]]
 combswr [x] _ = [[x]]
-combswr xs n = [a : cs|(a,bs) <- allsplits xs,cs <- combswr bs (n - 1)]
+combswr xs n =
+  [a : cs|a <- map (xs !!) [0 .. length xs - 1],cs <- combswr xs (n - 1)]
+
+-- combinations without replacement, all orders
+combswor :: [a] -> Int -> [[a]]
+combswor [] _ = [[]]
+combswor _ 0 = [[]]
+combswor [x] _ = [[x]]
+combswor xs n = [a : cs|(a,bs) <- allsplits xs,cs <- combswor bs (n - 1)]
+
+-- combinations without replacement, in order
+combsworo :: [a] -> Int -> [[a]]
+combsworo [] _ = [[]]
+combsworo _ 0 = [[]]
+combsworo [x] _ = [[x]]
+combsworo xs n =
+  [last as : cs
+  |(as,bs) <-
+     map (\n -> splitAt n xs)
+         [1 .. length xs - n + 1]
+  ,cs <- combsworo bs (n - 1)]
