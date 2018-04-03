@@ -3,7 +3,7 @@ module Read where
 splitBy :: Char -> String -> [String]
 splitBy c s =
   case break (== c) s of
-    (s1,',':rest) -> s1 : (splitBy c rest)
+    (s1,c:rest) -> s1 : (splitBy c rest)
     (s1,"") -> [s1]
 
 unquote :: String -> String
