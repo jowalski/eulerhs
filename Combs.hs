@@ -52,12 +52,27 @@ allsplits xs =
   map (takeNth xs)
       [0 .. length xs - 1]
 
+-- combinations with replacement, all orders
 combswr :: [a] -> Int -> [[a]]
 combswr [] _ = [[]]
 combswr _ 0 = [[]]
 combswr [x] _ = [[x]]
 combswr xs n =
   [a : cs|a <- map (xs !!) [0 .. length xs - 1],cs <- combswr xs (n - 1)]
+
+-- combinations with replacement in order
+combswro :: [a] -> Int -> [[a]]
+combswro [] _ = [[]]
+combswro _ 0 = [[]]
+combswro [x] n = [replicate n x]
+combswro xs n =
+  [last as : cs
+  |(as,bs) <-
+     map (\n' -> splitAt n' xs)
+         [1 .. length xs]
+  ,cs <-
+     combswro (last as : bs)
+              (n - 1)]
 
 -- combinations without replacement, all orders
 combswor :: [a] -> Int -> [[a]]
